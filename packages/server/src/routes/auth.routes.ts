@@ -1,12 +1,12 @@
 import { Router } from "express";
-import type { Request, Response, NextFunction } from "express";
 import * as authController from "../controllers/auth.controller.js";
 import { authenticate } from "../middleware/auth.js";
+import { asyncHandler } from "../middleware/async.js";
 
 const router: Router = Router();
 
-router.post("/login", authController.login);
-router.post("/refresh", authController.refresh);
-router.get("/me", authenticate, authController.me);
+router.post("/login", asyncHandler(authController.login));
+router.post("/refresh", asyncHandler(authController.refresh));
+router.get("/me", authenticate, asyncHandler(authController.me));
 
 export default router;
