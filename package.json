@@ -1,0 +1,30 @@
+{
+  "name": "noteapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NoteApp 公司网站 - 前端展示 + 后台管理系统",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "db:migrate": "pnpm --filter database exec prisma migrate dev",
+    "db:seed": "pnpm --filter database exec tsx prisma/seed.ts",
+    "db:brand": "pnpm --filter @noteapp/database run db:brand",
+    "db:studio": "pnpm --filter database exec prisma studio",
+    "db:push": "pnpm --filter database exec prisma db push",
+    "deploy:windows": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy.ps1",
+    "deploy:linux": "bash ./scripts/deploy.sh"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  }
+}

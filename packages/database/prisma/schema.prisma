@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== 管理员用户 ====================
+model Admin {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique @db.VarChar(50)
+  email     String    @unique @db.VarChar(100)
+  password  String    @db.VarChar(255)
+  role      AdminRole @default(EDITOR)
+  avatar    String?   @db.VarChar(255)
+  status    Int       @default(1) @db.TinyInt
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  articles Article[]
+
+  @@map("admins")
+}
+
+// ==================== 公司信息 ====================
+model CompanyInfo {
+  id          Int     @id @default(1)
+  name        String  @db.VarChar(100)
+  logo        String? @db.VarChar(255)
+  description String? @db.Text
+  address     String? @db.VarChar(255)
+  phone       String? @db.VarChar(50)
+  email       String? @db.VarChar(100)
+  wechat      String? @db.VarChar(100)
+  aboutUs     String? @db.LongText
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("company_info")
+}
+
+// ==================== 产品/服务 ====================
+model Product {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(200)
+  summary    String?  @db.VarChar(500)
+  content    String   @db.LongText
+  coverImage String?  @db.VarChar(255)
+  category   String?  @db.VarChar(50)
+  sort       Int      @default(0)
+  status     Int      @default(1) @db.TinyInt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@map("products")
+}
+
+// ==================== 新闻文章 ====================
+model Article {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(200)
+  summary     String?   @db.VarChar(500)
+  content     String    @db.LongText
+  coverImage  String?   @db.VarChar(255)
+  category    String?   @db.VarChar(50)
+  viewCount   Int       @default(0)
+  isTop       Boolean   @default(false)
+  status      Int       @default(1) @db.TinyInt
+  authorId    Int?
+  author      Admin?    @relation(fields: [authorId], references: [id])
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@index([authorId])
+  @@map("articles")
+}
+
+// ==================== 联系留言 ====================
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  email     String?  @db.VarChar(100)
+  phone     String?  @db.VarChar(50)
+  company   String?  @db.VarChar(100)
+  message   String   @db.Text
+  status    Int      @default(0) @db.TinyInt
+  reply     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("contacts")
+}
+
+// ==================== 系统设置 ====================
+model Setting {
+  key       String   @id @db.VarChar(50)
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+// ==================== 枚举 ====================
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
