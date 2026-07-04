@@ -4,6 +4,32 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+FORCE_DEPLOY=0
+if [[ "${1:-}" == "--yes" ]]; then
+  FORCE_DEPLOY=1
+fi
+
+confirm_deploy_action() {
+  if [[ "$FORCE_DEPLOY" -eq 1 ]]; then
+    return
+  fi
+
+  echo
+  echo "==> 部署前确认"
+  echo "该脚本将执行数据库迁移、写入种子数据、应用版权与联系方式更新。"
+  echo "其中以下数据会被直接更新："
+  echo "1. 公司邮箱 -> 599594629@qq.com"
+  echo "2. 公司地址 -> 甘肃兰州"
+  echo "3. 公司微信 -> jieyi5170"
+  echo "4. site_copyright / footer_copyright -> piglatiao"
+  echo
+  read -r -p "确认继续部署吗？输入 Y 继续，其他任意内容取消: " answer
+  if [[ "$answer" != "Y" && "$answer" != "y" ]]; then
+    echo "已取消部署。"
+    exit 1
+  fi
+}
+
 echo "==> 准备环境"
 
 if [ ! -f ".env" ]; then
@@ -20,6 +46,8 @@ set -a
 # shellcheck disable=SC1091
 . ./.env
 set +a
+
+confirm_deploy_action
 
 echo "==> 安装依赖"
 pnpm install
