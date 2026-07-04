@@ -16,10 +16,15 @@ if [ ! -f ".env" ]; then
   fi
 fi
 
+set -a
+# shellcheck disable=SC1091
+. ./.env
+set +a
+
 echo "==> 安装依赖"
 pnpm install
 
-echo "==> 创建数据库"
+echo "==> 创建并检查数据库"
 node ./scripts/ensure-database.mjs
 
 echo "==> 生成 Prisma Client"
@@ -39,11 +44,15 @@ pnpm build
 
 mkdir -p logs
 
+echo "==> 停止旧的部署进程"
+pkill -f "packages/server/dist/app.js" 2>/dev/null || true
+pkill -f "vite preview --host 0.0.0.0 --port 5173" 2>/dev/null || true
+
 echo "==> 启动后端服务"
 nohup node packages/server/dist/app.js > logs/server.log 2>&1 &
 SERVER_PID=$!
 
-echo "==> 启动前端预览服务"
+echo "==> 启动前端预览"
 nohup pnpm --filter @noteapp/web exec vite preview --host 0.0.0.0 --port 5173 > logs/web.log 2>&1 &
 WEB_PID=$!
 

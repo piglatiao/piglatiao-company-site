@@ -35,23 +35,23 @@ function readEnvFile(envPath) {
 function ensureDatabase() {
   const envPath = resolve(process.cwd(), ".env");
   if (!existsSync(envPath)) {
-    throw new Error("未找到 .env 文件，请先创建数据库连接配置。");
+    throw new Error("Missing .env file. Please create database connection settings first.");
   }
 
   const env = readEnvFile(envPath);
   const databaseUrl = env.DATABASE_URL;
   if (!databaseUrl) {
-    throw new Error(".env 中缺少 DATABASE_URL。");
+    throw new Error("DATABASE_URL is missing in .env.");
   }
 
   const url = new URL(databaseUrl);
   if (url.protocol !== "mysql:") {
-    throw new Error(`当前脚本仅支持 MySQL，实际协议为: ${url.protocol}`);
+    throw new Error(`This script only supports MySQL. Current protocol: ${url.protocol}`);
   }
 
   const databaseName = decodeURIComponent(url.pathname.replace(/^\//, ""));
   if (!databaseName) {
-    throw new Error("DATABASE_URL 中未包含数据库名。");
+    throw new Error("DATABASE_URL does not contain a database name.");
   }
 
   const mysqlArgs = [
@@ -70,11 +70,11 @@ function ensureDatabase() {
     execFileSync("mysql", mysqlArgs, { stdio: "inherit" });
   } catch (error) {
     throw new Error(
-      "执行 mysql 创建数据库失败，请确认已安装 MySQL 客户端且 PATH 中可直接调用 mysql 命令。",
+      "Failed to create database with mysql. Ensure the MySQL client is installed and mysql is available in PATH.",
       { cause: error },
     );
   }
 }
 
 ensureDatabase();
-console.log("✅ 数据库已确认存在");
+console.log("Database is ready.");

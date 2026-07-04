@@ -11,7 +11,7 @@ loadEnv({
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 开始种子数据初始化...\n");
+  console.log("Starting seed data initialization...\n");
 
   // ==================== 管理员 ====================
   const adminPassword = await bcrypt.hash("admin123", 12);
@@ -27,7 +27,7 @@ async function main() {
       status: 1,
     },
   });
-  console.log(`✅ 管理员: admin / admin123 (ID: ${superAdmin.id})`);
+  console.log(`Admin ready: admin / admin123 (ID: ${superAdmin.id})`);
 
   const editor = await prisma.admin.upsert({
     where: { username: "editor" },
@@ -40,7 +40,7 @@ async function main() {
       status: 1,
     },
   });
-  console.log(`✅ 编辑: editor / editor123 (ID: ${editor.id})`);
+  console.log(`Editor ready: editor / editor123 (ID: ${editor.id})`);
 
   // ==================== 公司信息 ====================
   await prisma.companyInfo.upsert({
@@ -57,7 +57,7 @@ async function main() {
       aboutUs: "我们是一家致力于提升个人与企业知识管理效率的科技公司。通过创新的产品和服务，帮助用户更好地记录、整理和分享信息。",
     },
   });
-  console.log("✅ 公司信息初始化完成");
+  console.log("Company info initialized.");
 
   // ==================== 产品 ====================
   const products = [
@@ -69,7 +69,7 @@ async function main() {
     const existing = await prisma.product.findFirst({ where: { title: p.title } });
     if (!existing) await prisma.product.create({ data: p });
   }
-  console.log(`✅ 产品数据: ${products.length} 条`);
+  console.log(`Products seeded: ${products.length}`);
 
   // ==================== 新闻 ====================
   const articles = [
@@ -81,7 +81,7 @@ async function main() {
     const existing = await prisma.article.findFirst({ where: { title: a.title } });
     if (!existing) await prisma.article.create({ data: a });
   }
-  console.log(`✅ 新闻数据: ${articles.length} 条`);
+  console.log(`Articles seeded: ${articles.length}`);
 
   // ==================== 系统设置 ====================
   const settings = [
@@ -189,17 +189,17 @@ async function main() {
       create: s,
     });
   }
-  console.log(`✅ 系统设置: ${settings.length} 项`);
+  console.log(`Settings seeded: ${settings.length}`);
 
-  console.log("\n🎉 种子数据初始化完成！");
-  console.log("\n📋 登录信息:");
-  console.log("   超级管理员: admin / admin123");
-  console.log("   编辑:      editor / editor123");
+  console.log("\nSeed initialization completed.");
+  console.log("\nLogin credentials:");
+  console.log("   Super admin: admin / admin123");
+  console.log("   Editor:      editor / editor123");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ 种子数据初始化失败:", e);
+    console.error("Seed initialization failed:", e);
     process.exit(1);
   })
   .finally(async () => {

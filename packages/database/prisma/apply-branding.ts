@@ -62,12 +62,12 @@ async function main() {
     });
   }
 
-  console.log("✅ 版权与公开联系方式已更新完成");
+  console.log("Branding values have been updated.");
 }
 
 main()
   .catch((error) => {
-    console.error("❌ 更新版权与公开联系方式失败:", error);
+    console.error("Failed to update branding values:", error);
     process.exit(1);
   })
   .finally(async () => {

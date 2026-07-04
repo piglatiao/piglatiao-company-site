@@ -14,7 +14,9 @@
     "db:studio": "pnpm --filter database exec prisma studio",
     "db:push": "pnpm --filter database exec prisma db push",
     "deploy:windows": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy.ps1",
-    "deploy:linux": "bash ./scripts/deploy.sh"
+    "deploy:linux": "bash ./scripts/deploy.sh",
+    "stop:windows": "powershell -ExecutionPolicy Bypass -File ./scripts/stop.ps1",
+    "stop:linux": "bash ./scripts/stop.sh"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
