@@ -187,6 +187,56 @@ pnpm db:push      # 同步 schema 到数据库
 - 动效：交错式淡入、滚动感知导航、hover 微交互
 - 纹理：subtle grain overlay 增加深度感
 
+## 部署脚本
+
+项目内已经提供 Windows / Linux 一键部署、启动、停止脚本。
+
+### Windows
+
+```powershell
+.\scripts\deploy.ps1
+.\scripts\start.ps1
+.\scripts\stop.ps1
+```
+
+也可以通过 `pnpm` 调用：
+
+```bash
+pnpm run deploy:windows
+pnpm run start:windows
+pnpm run stop:windows
+```
+
+### Linux
+
+```bash
+bash ./scripts/deploy.sh
+bash ./scripts/start.sh
+bash ./scripts/stop.sh
+```
+
+也可以通过 `pnpm` 调用：
+
+```bash
+pnpm run deploy:linux
+pnpm run start:linux
+pnpm run stop:linux
+```
+
+### 脚本行为说明
+
+- `deploy`：安装依赖、检查数据库、执行迁移、写入种子数据、应用版权和联系方式、构建并启动服务
+- `start`：仅启动已经构建好的后端服务和前端预览，不会重新迁移数据库或写入种子
+- `stop`：仅停止由部署脚本 / 启动脚本拉起的生产进程，不会停止本地 `pnpm dev`
+
+### 重要提示
+
+- `deploy` 会修改数据库中的品牌信息，并在执行前弹出确认提示
+- Windows 下 `deploy.ps1`、`start.ps1`、`stop.ps1` 执行结束后默认会等待回车，方便直接双击运行时查看结果
+- 如果你在自动化环境中执行，可使用 `-Force` 跳过部署确认，使用 `-NoPause` 跳过脚本结束等待
+
+详细说明见 [docs/deploy-script-guide.md](./docs/deploy-script-guide.md)。
+
 ## License
 
 MIT License，详见 `LICENSE`。
